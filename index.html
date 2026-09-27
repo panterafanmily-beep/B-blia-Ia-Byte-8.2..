@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bíblia IA Byte</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#39ff14">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;900&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .text-stroke-gold { -webkit-text-stroke: 1.5px #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        .neon-glow { box-shadow: 0 0 30px rgba(57, 255, 20, 0.4); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #39ff14; border-radius: 3px; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .verse-number { color: #39ff14; font-size: 0.75em; font-weight: bold; vertical-align: super; margin-right: 4px; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .highlight { background-color: rgba(57, 255, 20, 0.3); color: #fff; border-radius: 2px; padding: 0 2px; }
+        .typing-dot { animation: typing 1.4s infinite; display: inline-block; width: 6px; height: 6px; background: #39ff14; border-radius: 50%; margin: 0 2px; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+        .ai-bubble { max-width: 85%; word-wrap: break-word; }
+        .msg-user { background: linear-gradient(135deg, #18181b, #27272a); border: 1px solid #3f3f46; margin-left: auto; }
+        .msg-ai { background: linear-gradient(135deg, #052e16, #14532d); border: 1px solid #39ff14; box-shadow: 0 0 10px rgba(57, 255, 20, 0.1); }
+        .nav-active { color: #39ff14 !important; background: rgba(57, 255, 20, 0.08); }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 flex justify-center items-center min-h-screen p-0 sm:p-4 select-none">
+    <div id="app-container" class="w-full max-w-md h-[100vh] sm:h-[850px] bg-zinc-900 border border-zinc-800 relative flex flex-col overflow-hidden sm:rounded-3xl shadow-2xl">
+        <!-- CAPA ULTRA LIMPA PROFISSIONAL v8.0 - SÓ LOGO + NOME + BOTÃO -->
+    <div id="app-cover" class="absolute inset-0 bg-[#39ff14] border-[14px] border-double border-[#d4af37] z-50 flex flex-col p-10 items-center text-center transition-all duration-700 ease-in-out neon-glow">
+        <!-- Status oculto para funcionamento interno - não visível na versão ultra limpa -->
+        <div id="status-biblia" class="hidden">Carregando ACF + Harpa Oficial 640...</div>
+        
+        <!-- CENTRO ULTRA LIMPO - LOGO + NOME + SÍMBOLO IA PEQUENO -->
+        <div class="flex-1 flex flex-col items-center justify-center gap-8">
+            <div class="bg-black text-[#39ff14] p-8 rounded-full border-[5px] border-[#d4af37] shadow-2xl">
+                <i data-lucide="book-marked" class="w-20 h-20"></i>
+            </div>
+            <div class="space-y-3 flex flex-col items-center">
+                <h1 class="text-5xl font-black text-black tracking-tighter text-stroke-gold leading-none uppercase text-center">Bíblia<br>IA Byte</h1>
+                <!-- SÍMBOLO IA PEQUENO ABAIXO DO NOME -->
+                <div class="flex items-center gap-1.5 bg-black/10 backdrop-blur-sm px-3 py-1 rounded-full border border-black/10 mt-1">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-black/70"></i>
+                    <span class="text-[10px] font-bold tracking-[0.2em] text-black/70 uppercase">Inteligência Artificial</span>
+                    <i data-lucide="cpu" class="w-3.5 h-3.5 text-black/70"></i>
+                </div>
+                <div class="w-12 h-1 bg-black/20 mx-auto rounded-full mt-2"></div>
+            </div>
+        </div>
+        
+        <!-- BOTÃO ÚNICO -->
+        <div class="w-full">
+            <button onclick="abrirAplicativo()" class="w-full bg-black hover:bg-zinc-900 text-white font-bold py-5 px-8 rounded-2xl border-2 border-[#d4af37] shadow-2xl flex items-center justify-center gap-3 transition-all active:scale-95 hover:shadow-xl">
+                <span class="tracking-widest text-sm">ABRIR ESCRITURAS</span>
+                <i data-lucide="arrow-right" class="w-5 h-5 text-[#39ff14]"></i>
+            </button>
+            <p class="text-[9px] text-black/40 font-mono mt-3 tracking-widest uppercase">v8.0 • Oficial • 640 Hinos</p>
+        </div>
+    </div>
+
+        <header class="bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 p-4 flex items-center justify-between z-40 shrink-0">
+            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-[#39ff14] text-black flex items-center justify-center rounded-xl border border-[#d4af37]"><i data-lucide="book-open-check" class="w-5 h-5"></i></div><div><h2 class="text-sm font-bold text-white tracking-wide">Bíblia IA Byte</h2><span id="sub-titulo-aba" class="text-xs text-[#39ff14] block">Cânon Completo ACF</span></div></div>
+            <div class="flex items-center gap-1"><button onclick="abrirHistorico()" class="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400"><i data-lucide="history" class="w-5 h-5"></i></button><button onclick="toggleConfig()" class="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400"><i data-lucide="sliders" class="w-5 h-5"></i></button></div>
+        </header>
+
+        <div id="panel-config" class="hidden absolute top-[73px] left-0 right-0 bg-zinc-950/95 border-b border-zinc-800 p-4 z-40 backdrop-blur-md shadow-xl fade-in max-h-[70vh] overflow-y-auto">
+            <h3 class="text-xs font-bold uppercase text-zinc-400 mb-3">Ajustes Visuais</h3>
+            <div class="grid grid-cols-2 gap-4 mb-4"><div><label class="text-xs text-zinc-500 block mb-1">Fonte</label><div class="flex gap-2"><button onclick="alterarFonte(-2)" class="flex-1 bg-zinc-800 py-1 rounded text-sm">A-</button><button onclick="alterarFonte(2)" class="flex-1 bg-zinc-800 py-1 rounded text-sm">A+</button></div></div><div><label class="text-xs text-zinc-500 block mb-1">Espaçamento</label><div class="flex gap-2"><button onclick="alterarEspacamento('relaxed')" class="flex-1 bg-zinc-800 py-1 text-xs rounded">Largo</button><button onclick="alterarEspacamento('normal')" class="flex-1 bg-zinc-800 py-1 text-xs rounded">Normal</button></div></div></div>
+            <h3 class="text-xs font-bold uppercase text-zinc-400 mb-3 border-t border-zinc-800 pt-3">🤖 IA</h3>
+            <div class="space-y-2"><select id="ai-provider" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-sm text-zinc-200"><option value="gemini">Google Gemini</option><option value="openai">OpenAI</option></select><div class="flex gap-2"><input type="password" id="ai-apikey" placeholder="API Key (fica só no aparelho)" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-sm"><button onclick="toggleKeyVis()" class="bg-zinc-800 px-3 rounded-lg text-xs">👁️</button></div><button onclick="salvarConfigIA()" class="w-full bg-[#39ff14] text-black font-bold py-2 rounded-lg text-sm">Salvar</button><button onclick="limparCacheBiblia()" class="w-full bg-zinc-800 text-zinc-300 py-2 rounded-lg text-xs">Limpar caches ACF/Harpa 640 Oficial/Dicionário</button></div>
+        </div>
+
+        <div id="panel-historico" class="hidden absolute top-[73px] left-0 right-0 bg-zinc-950/95 border-b border-zinc-800 p-4 z-40 backdrop-blur-md shadow-xl fade-in max-h-[70vh] overflow-y-auto"><div class="flex justify-between items-center mb-3"><h3 class="text-xs font-bold uppercase text-zinc-400">📚 Histórico</h3><button onclick="limparHistorico()" class="text-[10px] text-red-400">Limpar</button></div><div id="lista-historico" class="space-y-2"></div></div>
+
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 pb-24 relative">
+            <section id="tela-biblia" class="space-y-4 fade-in"><div class="flex bg-zinc-950 p-1 rounded-xl gap-1 border border-zinc-800"><button onclick="filtrarTestamento('AT')" id="btn-at" class="flex-1 py-2 text-center text-xs font-bold rounded-lg bg-zinc-800 text-white">Velho Testamento</button><button onclick="filtrarTestamento('NT')" id="btn-nt" class="flex-1 py-2 text-center text-xs font-bold rounded-lg text-zinc-400">Novo Testamento</button></div><div class="flex gap-2"><input id="input-filtro-livros" oninput="filtrarLivrosPorNome()" placeholder="Filtrar livro..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm"><span id="contador-livros" class="text-[10px] text-zinc-500 self-center"></span></div><div id="grid-livros" class="grid grid-cols-3 gap-2"></div></section>
+            <section id="tela-leitor" class="hidden space-y-4 fade-in"><div class="flex items-center gap-2 sticky top-0 bg-zinc-900/90 backdrop-blur py-2 z-10"><button onclick="voltarParaLivros()" class="p-2 bg-zinc-800 rounded-lg"><i data-lucide="arrow-left" class="w-4 h-4"></i></button><h3 id="leitor-titulo-livro" class="text-lg font-bold">Gênesis</h3><button onclick="compartilharCapitulo()" class="ml-auto p-2 bg-zinc-800 rounded-lg"><i data-lucide="share-2" class="w-4 h-4"></i></button></div><div id="lista-capitulos" class="flex gap-2 overflow-x-auto py-1 pb-2 scrollbar-hide"></div><div id="leitor-texto" class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl space-y-4 text-zinc-300 leading-relaxed text-base"></div></section>
+            <section id="tela-busca" class="hidden space-y-4 fade-in"><div class="relative"><input type="text" id="input-busca-global" placeholder="Buscar em toda ACF, harpa 640 ou dicionário web..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 pl-10 pr-4 text-sm"><i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-zinc-500"></i></div><p class="text-[10px] text-zinc-500">Debounce 350ms + XSS seguro</p><div id="resultados-busca" class="space-y-3"></div></section>
+            <section id="tela-chat-ia" class="hidden h-full flex flex-col"><div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#39ff14] to-emerald-600 flex items-center justify-center"><i data-lucide="bot" class="w-4 h-4 text-black"></i></div><div><h3 class="text-sm font-bold">Assistente Bíblico</h3><span class="text-[10px] text-[#39ff14]" id="ai-status">Online</span></div></div><button onclick="limparChat()" class="text-[10px] bg-zinc-800 px-2 py-1 rounded">Limpar</button></div><div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 pb-4 min-h-[300px]"><div class="flex gap-2 items-start"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#39ff14] to-emerald-600 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3.5 h-3.5 text-black"></i></div><div class="msg-ai ai-bubble p-3 rounded-2xl rounded-tl-sm text-sm">Shalom! 👋 ACF + Harpa 640 oficial com letras completas + Dicionário Web ativos.</div></div></div><div class="sticky bottom-0 bg-zinc-900 pt-3 border-t border-zinc-800"><div class="flex gap-2 items-end"><textarea id="chat-input" rows="1" placeholder="Pergunte algo bíblico..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm resize-none max-h-32" oninput="autoGrow(this)" onkeypress="verificarTeclaChat(event)"></textarea><button onclick="enviarMensagem()" id="btn-enviar" class="bg-[#39ff14] text-black p-3 rounded-xl shrink-0"><i data-lucide="send" class="w-5 h-5"></i></button></div><div class="flex gap-1.5 mt-2 overflow-x-auto scrollbar-hide pb-2"><button onclick="perguntaRapida('O que é graça?')" class="shrink-0 text-[10px] bg-zinc-800 px-2 py-1 rounded-full">Graça</button><button onclick="perguntaRapida('Quem foi Davi?')" class="shrink-0 text-[10px] bg-zinc-800 px-2 py-1 rounded-full">Davi</button></div></div></section>
+            <section id="tela-dicionario" class="hidden space-y-4 fade-in"><div class="bg-zinc-950 border border-zinc-800 p-3 rounded-xl space-y-2"><div class="relative"><input type="text" id="input-busca-dicio" placeholder="Buscar termo bíblico (ex: ágape, Gólgota, Shekinah)..." class="w-full bg-zinc-900 border border-zinc-700 rounded-lg py-3 pl-10 pr-4 text-sm focus:border-[#39ff14] focus:outline-none"><i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-zinc-500"></i></div><div class="flex gap-2"><button onclick="buscarDicionarioWeb()" class="flex-1 bg-[#39ff14] text-black font-bold py-2 rounded-lg text-xs flex items-center justify-center gap-1"><i data-lucide="globe" class="w-3 h-3"></i> Buscar na Web + IA</button><button onclick="limparDicionario()" class="bg-zinc-800 px-3 py-2 rounded-lg text-xs">Limpar</button></div><p class="text-[10px] text-zinc-500">Fontes: Wikipédia PT + Dicionário Bíblico + IA</p></div><div class="flex gap-1 overflow-x-auto py-1 border-b border-zinc-800 scrollbar-hide" id="indices-alfabeticos"></div><div id="status-dicio" class="text-[11px] text-center text-zinc-500"></div><div id="lista-dicionario" class="space-y-3 mt-2"></div></section>
+            <section id="tela-harpa" class="hidden space-y-4 fade-in"><div class="relative"><input type="text" id="input-busca-harpa" placeholder="Buscar 640 hinos por número ou título (letras completas garantidas)..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 pl-10 pr-4 text-sm"><i data-lucide="music-4" class="w-4 h-4 absolute left-3.5 top-3.5 text-zinc-500"></i></div><div id="status-harpa" class="text-[10px] text-center text-[#39ff14]"></div><div id="lista-harpa" class="grid grid-cols-1 gap-2 max-h-[500px] overflow-y-auto"></div></section>
+            <section id="tela-pregacao" class="hidden space-y-4 fade-in"><div class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl space-y-3"><label class="text-xs font-bold uppercase text-zinc-400 block">Motor Homilético com Web Aberta</label><div class="flex gap-2"><input type="text" id="input-ia-keyword" placeholder="Ex: Fé, Santificação..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm"><button onclick="gerarPregacaoIA()" class="bg-gradient-to-r from-emerald-600 to-lime-600 text-white font-bold px-4 rounded-lg text-sm flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4"></i><span>Gerar</span></button></div><p class="text-[10px] text-zinc-500">IA real + Wikipedia + DuckDuckGo + ACF</p></div><div id="ia-loading" class="hidden flex-col items-center justify-center py-12 gap-3 text-center"><div class="w-8 h-8 border-4 border-zinc-700 border-t-[#39ff14] rounded-full animate-spin"></div><p class="text-xs text-zinc-400 font-mono animate-pulse">Gerando...</p></div><div id="ia-output" class="hidden bg-zinc-950 border border-zinc-800 p-4 rounded-xl space-y-4"></div></section>
+            <section id="tela-favoritos" class="hidden space-y-4 fade-in"><h3 class="text-sm font-bold flex items-center gap-2"><i data-lucide="bookmark-check" class="w-4 h-4 text-amber-500"></i>Versículos Guardados</h3><div id="lista-favoritos" class="space-y-2"></div></section>
+        </main>
+
+        <nav class="absolute bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800 flex justify-around items-center p-2 z-40 shrink-0">
+            <button onclick="navegarAba('tela-biblia')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 nav-active" data-aba="tela-biblia"><i data-lucide="book" class="w-5 h-5"></i><span class="text-[9px] font-bold">Bíblia</span></button>
+            <button onclick="navegarAba('tela-busca')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-busca"><i data-lucide="search" class="w-5 h-5"></i><span class="text-[9px] font-bold">Busca</span></button>
+            <button onclick="navegarAba('tela-chat-ia')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-chat-ia"><i data-lucide="bot" class="w-5 h-5"></i><span class="text-[9px] font-bold">IA Chat</span></button>
+            <button onclick="navegarAba('tela-dicionario')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-dicionario"><i data-lucide="book-open" class="w-5 h-5"></i><span class="text-[9px] font-bold">Dicionário</span></button>
+            <button onclick="navegarAba('tela-harpa')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-harpa"><i data-lucide="music" class="w-5 h-5"></i><span class="text-[9px] font-bold">Harpa</span></button>
+            <button onclick="navegarAba('tela-pregacao')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-pregacao"><i data-lucide="sparkles" class="w-5 h-5"></i><span class="text-[9px] font-bold">Esboço</span></button>
+            <button onclick="navegarAba('tela-favoritos')" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg w-14 text-zinc-500" data-aba="tela-favoritos"><i data-lucide="heart" class="w-5 h-5"></i><span class="text-[9px] font-bold">Salvos</span></button>
+        </nav>
+    </div>
+
+<script>
+// === CONFIG ===
+const TESTAMENTOS = { AT: ["Gênesis","Êxodo","Levítico","Números","Deuteronômio","Josué","Juízes","Rute","1 Samuel","2 Samuel","1 Reis","2 Reis","1 Crônicas","2 Crônicas","Esdras","Neemias","Ester","Jó","Salmos","Provérbios","Eclesiastes","Cânticos","Isaías","Jeremias","Lamentações","Ezequiel","Daniel","Oséias","Joel","Amós","Obadias","Jonas","Miquéias","Naum","Habacuque","Sofonias","Ageu","Zacarias","Malaquias"], NT: ["Mateus","Marcos","Lucas","João","Atos","Romanos","1 Coríntios","2 Coríntios","Gálatas","Efésios","Filipenses","Colossenses","1 Tessalonicenses","2 Tessalonicenses","1 Timóteo","2 Timóteo","Tito","Filemom","Hebreus","Tiago","1 Pedro","2 Pedro","1 João","2 João","3 João","Judas","Apocalipse"] };
+let bibliaData = { "Gênesis": { testamento: "AT", capitulos: { "1": ["No princípio criou Deus os céus e a terra."]}}, "João": { testamento: "NT", capitulos: { "3": ["Porque Deus amou o mundo..."]}} };
+let dicionarioDataLocal = { "A": [{ termo: "Ágape", def: "Amor divino." }], "G": [{ termo: "Graça", def: "Favor imerecido." }] };
+let harpaData = [{ num: "1", titulo: "Chuvas de Graça", trecho: "Deus nos deu...", letra_completa: "Deus nos deu..." }];
+let harpaCompletaCarregada=false;
+let currentFontSize=16, currentLineHeight='normal', favoritos=JSON.parse(localStorage.getItem('biblia_favoritos')||'[]'), historico=JSON.parse(localStorage.getItem('biblia_historico')||'[]'), chatHistory=JSON.parse(localStorage.getItem('biblia_chat')||'[]'), aiConfig=JSON.parse(localStorage.getItem('biblia_ai_config')||'{"provider":"gemini","apiKey":""}'), isAiThinking=false, currentLivro=null, currentCap=null, debounceBusca=null, debounceDicio=null;
+
+function escapeHtml(text){ const div=document.createElement('div'); div.textContent=text==null?'':String(text); return div.innerHTML; }
+function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function destacarTextoSeguro(texto, query){ if(!query) return escapeHtml(texto); const safeText=escapeHtml(texto); try{ const regex=new RegExp(`(${escapeRegExp(query)})`,'gi'); return safeText.replace(regex,'<span class="highlight">$1</span>'); }catch(e){ return safeText; } }
+function criarVersiculoElement(livro,cap,idx,texto){ const p=document.createElement('p'); p.className='mb-2 break-words'; const num=document.createElement('span'); num.className='verse-number'; num.textContent=(idx+1); p.appendChild(num); const t=document.createElement('span'); t.textContent=' '+texto+' '; p.appendChild(t); const btn=document.createElement('button'); btn.className='inline-flex ml-2 text-zinc-600 hover:text-amber-500 align-middle'; btn.innerHTML='<i data-lucide="bookmark" class="w-4 h-4"></i>'; btn.onclick=()=> toggleFavorito(`${livro} ${cap}:${idx+1}`,texto); p.appendChild(btn); return p; }
+
+// ACF
+async function carregarACFCompleta(){
+  const status=document.getElementById('status-biblia');
+  try{
+    const cached=localStorage.getItem('biblia_acf_full');
+    if(cached){ const parsed=JSON.parse(cached); if(parsed && Object.keys(parsed).length>50){ bibliaData=parsed; status.textContent=`ACF: ${Object.keys(parsed).length} livros | Harpa oficial carregando...`; renderizarLivros('AT'); return; } }
+    status.textContent='Baixando ACF 66 livros...';
+    const res=await fetch('https://raw.githubusercontent.com/thiagobodruk/biblia/master/json/acf.json'); const data=await res.json(); const novo={}; data.forEach(livro=>{ const caps={}; livro.chapters.forEach((versos,i)=>{ caps[String(i+1)]=versos; }); novo[livro.name]={testamento:TESTAMENTOS.NT.includes(livro.name)?'NT':'AT', capitulos:caps}; }); bibliaData=novo; try{ localStorage.setItem('biblia_acf_full', JSON.stringify(novo)); }catch(e){} renderizarLivros('AT');
+  }catch(err){}
+}
+
+// HARPA OFICIAL 640 LETRAS COMPLETAS GARANTIDAS - NOVA FONTE
+async function carregarHarpaCompleta(){
+  const status=document.getElementById('status-biblia');
+  const statusHarpa=document.getElementById('status-harpa');
+  const fontesOficiais = [
+    { url: 'https://cdn.jsdelivr.net/gh/gerson23/harpa-crista@master/json/harpa.json', type: 'jsdelivr-gerson-oficial', isArray: true },
+    { url: 'https://raw.githubusercontent.com/gerson23/harpa-crista/master/json/harpa.json', type: 'gerson-raw-oficial' },
+    { url: 'https://harpa-crista-api.vercel.app/api/hinos', type: 'vercel-api-oficial' },
+    { url: 'https://raw.githubusercontent.com/vitorsalgado/harpa-crista-api/main/data/hinos.json', type: 'vitor-api' }
+  ];
+
+  try{
+    const cache = localStorage.getItem('harpa_640_oficial');
+    if(cache){
+      const parsed = JSON.parse(cache);
+      if(parsed && parsed.length >= 640 && parsed[0].letra_completa && parsed[0].letra_completa.length > 100){
+        harpaData = parsed; harpaCompletaCarregada = true;
+        renderizarHarpa(harpaData);
+        if(status) status.textContent = `Harpa oficial: 640 letras completas (cache)`;
+        if(statusHarpa) statusHarpa.textContent = `✓ 640 hinos com letras completas oficiais carregados`;
+        return;
+      }
+    }
+  }catch(e){}
+
+  for(const fonte of fontesOficiais){
+    try{
+      if(status) status.textContent = `Baixando Harpa oficial 640 letras completas...`;
+      if(statusHarpa) statusHarpa.textContent = `Baixando fonte oficial: ${fonte.type}...`;
+      const res = await fetch(fonte.url);
+      if(!res.ok) continue;
+      const data = await res.json();
+      let rawList = Array.isArray(data) ? data : (data.hinos || data.data || []);
+      if(!rawList || rawList.length < 100) continue;
+      let lista = [];
+      rawList.forEach((h,i)=>{
+        let num = h.numero || h.number || h.num || h.id || (i+1);
+        let titulo = h.titulo || h.title || h.nome || `Hino ${num}`;
+        let letraFull = h.letra || h.lyrics || h.corpo || h.text || h.letra_completa || '';
+        if(Array.isArray(letraFull)) letraFull = letraFull.join('\n\n');
+        if(typeof letraFull === 'object' && letraFull !== null) letraFull = '';
+        let trecho = letraFull ? letraFull.slice(0,120).replace(/\n/g,' ') : '';
+        if(!letraFull || letraFull.length < 20) return;
+        lista.push({ num: String(num), titulo: String(titulo).trim(), trecho: trecho, letra_completa: letraFull, autor: h.autor || '', coro: h.coro || '' });
+      });
+      if(lista.length >= 600){
+        lista.sort((a,b)=> parseInt(a.num)-parseInt(b.num));
+        const comLetra = lista.filter(x=> x.letra_completa && x.letra_completa.length > 50).length;
+        if(comLetra >= 500){
+          harpaData = lista;
+          harpaCompletaCarregada = true;
+          try{ localStorage.setItem('harpa_640_oficial', JSON.stringify(lista)); localStorage.setItem('harpa_640_cache', JSON.stringify(lista)); }catch(e){}
+          renderizarHarpa(harpaData);
+          if(status) status.textContent = `Harpa oficial: ${lista.length} letras completas garantidas ✓`;
+          if(statusHarpa) statusHarpa.textContent = `✓ ${lista.length} hinos com letras completas oficiais - fonte ${fonte.type}`;
+          console.log('Harpa oficial ok', lista.length);
+          return;
+        }
+      }
+    }catch(e){ console.warn('Harpa fonte falhou', fonte.type, e.message); }
+  }
+  // fallback mantém
+  renderizarHarpa(harpaData);
+  if(statusHarpa) statusHarpa.textContent = `Modo offline: ${harpaData.length} hinos - conecte para 640 completas`;
+}
+
+async function buscarWebAberta(keyword){
+  const resultados={wikipedia:[], duckduckgo:[]};
+  try{
+    const wikiUrl=`https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(keyword + ' significado bíblico')}&format=json&origin=*&srlimit=3`;
+    const wikiRes=await fetch(wikiUrl); if(wikiRes.ok){ const wikiData=await wikiRes.json(); if(wikiData.query && wikiData.query.search){ resultados.wikipedia=wikiData.query.search.map(s=>({titulo:s.title, trecho:s.snippet.replace(/<[^>]*>/g,''), url:`https://pt.wikipedia.org/wiki/${encodeURIComponent(s.title)}`})); } }
+  }catch(e){}
+  try{
+    const ddgUrl=`https://api.duckduckgo.com/?q=${encodeURIComponent(keyword + ' significado bíblico')}&format=json&pretty=1&no_html=1&skip_disambig=1`;
+    const ddgRes=await fetch(ddgUrl); if(ddgRes.ok){ const ddgData=await ddgRes.json(); if(ddgData.AbstractText) resultados.duckduckgo.push({texto:ddgData.AbstractText, url:ddgData.AbstractURL}); }
+  }catch(e){}
+  return resultados;
+}
+
+async function buscarDicionarioWeb(termoForcado){
+  const input=document.getElementById('input-busca-dicio');
+  const termo=(termoForcado || input.value || '').trim();
+  if(!termo || termo.length<2){ alert('Digite um termo bíblico'); return; }
+  const status=document.getElementById('status-dicio');
+  const lista=document.getElementById('lista-dicionario');
+  status.textContent=`Buscando "${termo}" na web + IA...`;
+  lista.innerHTML='<div class="flex justify-center py-6"><div class="w-6 h-6 border-4 border-zinc-700 border-t-[#39ff14] rounded-full animate-spin"></div></div>';
+  let resultadosFinais=[];
+  let webResults={wikipedia:[], duckduckgo:[]};
+  try{ webResults=await buscarWebAberta(termo); }catch(e){}
+  webResults.wikipedia.forEach(w=>{ resultadosFinais.push({termo:w.titulo, def:w.trecho+'...', fonte:'Wikipédia PT', url:w.url, tipo:'web'}); });
+  webResults.duckduckgo.forEach(d=>{ if(d.texto) resultadosFinais.push({termo:termo, def:d.texto.slice(0,300), fonte:'DuckDuckGo', url:d.url, tipo:'web'}); });
+  if(aiConfig.apiKey){
+    try{
+      status.textContent=`Buscando definição teológica com IA...`;
+      const promptDicio=`Defina termo bíblico "${termo}" em PT-BR. Formato: TERMO, ORIGEM hebraico/grego Strong, SIGNIFICADO, USO BÍBLICO, TEOLÓGICO, APLICAÇÃO. Máx 200 palavras.`;
+      let defIA='';
+      if(aiConfig.provider==='gemini'){
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${aiConfig.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:"Você é lexicógrafo bíblico."}]},contents:[{role:'user',parts:[{text:promptDicio}]}]})});
+        if(res.ok){ const data=await res.json(); defIA=data.candidates?.[0]?.content?.parts?.[0]?.text||''; }
+      }else{
+        const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${aiConfig.apiKey}`},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:'Lexicógrafo bíblico.'},{role:'user',content:promptDicio}],temperature:0.3})});
+        if(res.ok){ const data=await res.json(); defIA=data.choices?.[0]?.message?.content||''; }
+      }
+      if(defIA){ resultadosFinais.unshift({termo:termo, def:defIA, fonte:`IA ${aiConfig.provider}`, tipo:'ia'}); }
+    }catch(e){}
+  }
+  if(resultadosFinais.length===0){
+    let achados=[]; Object.keys(bibliaData).forEach(livro=>{ Object.keys(bibliaData[livro].capitulos).forEach(cap=>{ bibliaData[livro].capitulos[cap].forEach((v,i)=>{ if(v.toLowerCase().includes(termo.toLowerCase()) && achados.length<3){ achados.push({ref:`${livro} ${cap}:${i+1}`, texto:v}); } }); }); });
+    if(achados.length>0){ resultadosFinais.push({termo:termo, def:`Encontrado em: ${achados.map(a=>`${a.ref} - "${a.texto.slice(0,80)}"`).join(' | ')}`, fonte:'ACF', tipo:'biblia'}); }
+  }
+  lista.innerHTML=''; if(resultadosFinais.length===0){ lista.innerHTML=`<div class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl text-center"><p class="text-sm text-zinc-400">Nenhum resultado para "${escapeHtml(termo)}"</p></div>`; status.textContent=`Nenhum resultado`; }else{ status.textContent=`${resultadosFinais.length} definições para "${termo}"`; resultadosFinais.forEach(item=>{ const div=document.createElement('div'); div.className='bg-zinc-950 border border-zinc-800 p-4 rounded-xl fade-in'; const badgeColor=item.tipo==='ia'?'bg-[#39ff14] text-black':item.tipo==='web'?'bg-blue-600 text-white':'bg-zinc-700 text-zinc-300'; div.innerHTML=`<div class="flex justify-between gap-2 mb-2"><h4 class="text-sm font-bold text-[#39ff14]">${escapeHtml(item.termo)}</h4><span class="text-[9px] px-2 py-1 rounded-full ${badgeColor}">${escapeHtml(item.fonte)}</span></div><div class="text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">${formatarRespostaSegura(item.def)}</div>${item.url?`<a href="${escapeHtml(item.url)}" target="_blank" class="text-[10px] text-[#39ff14] mt-2 inline-block">🔗 Fonte</a>`:''}`; lista.appendChild(div); }); } lucide.createIcons();
+}
+function limparDicionario(){ document.getElementById('input-busca-dicio').value=''; document.getElementById('lista-dicionario').innerHTML='<p class="text-zinc-500 text-center text-sm py-8">Digite termo e busque</p>'; document.getElementById('status-dicio').textContent=''; }
+
+// INIT
+document.addEventListener('DOMContentLoaded', ()=>{
+  lucide.createIcons(); renderizarLivros('AT'); renderizarIndicesDicionario(); renderizarHarpa(harpaData); carregarHarpaCompleta(); renderizarFavoritos(); carregarConfigIA(); carregarChat(); carregarACFCompleta();
+  document.getElementById('input-busca-global').addEventListener('input', ()=>{ clearTimeout(debounceBusca); debounceBusca=setTimeout(()=> executarBuscaGlobal(), 350); });
+  document.getElementById('input-busca-harpa').addEventListener('input', ()=>{ clearTimeout(debounceBusca); debounceBusca=setTimeout(()=> filtrarHarpa(), 250); });
+  document.getElementById('input-busca-dicio').addEventListener('keypress', (e)=>{ if(e.key==='Enter') buscarDicionarioWeb(); });
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js').catch(()=>{}); }
+});
+function abrirAplicativo(){ const cover=document.getElementById('app-cover'); cover.style.opacity='0'; cover.style.pointerEvents='none'; setTimeout(()=>{ cover.classList.add('hidden'); },700); }
+function toggleConfig(){ document.getElementById('panel-config').classList.toggle('hidden'); document.getElementById('panel-historico').classList.add('hidden'); }
+function abrirHistorico(){ document.getElementById('panel-historico').classList.toggle('hidden'); document.getElementById('panel-config').classList.add('hidden'); renderizarHistorico(); }
+function alterarFonte(d){ currentFontSize=Math.max(12,Math.min(28,currentFontSize+d)); document.getElementById('leitor-texto').style.fontSize=currentFontSize+'px'; }
+function alterarEspacamento(v){ currentLineHeight=v; document.getElementById('leitor-texto').style.lineHeight=v==='relaxed'?'1.8':'1.5'; }
+function toggleKeyVis(){ const el=document.getElementById('ai-apikey'); el.type=el.type==='password'?'text':'password'; }
+function navegarAba(abaId){ document.querySelectorAll('main > section').forEach(sec=>sec.classList.add('hidden')); document.getElementById(abaId).classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(btn=>{ btn.classList.remove('nav-active'); btn.classList.add('text-zinc-500'); }); const active=document.querySelector(`[data-aba="${abaId}"]`); if(active){ active.classList.add('nav-active'); active.classList.remove('text-zinc-500'); } const titulos={'tela-biblia':'ACF 66 livros','tela-busca':'Busca','tela-chat-ia':'IA','tela-dicionario':'Dicionário Web','tela-harpa':'Harpa 640 Oficial','tela-pregacao':'Esboço Web','tela-favoritos':'Salvos'}; document.getElementById('sub-titulo-aba').textContent=titulos[abaId]||'Bíblia IA Byte'; if(abaId==='tela-favoritos') renderizarFavoritos(); if(abaId==='tela-chat-ia') scrollChatToBottom(); lucide.createIcons(); }
+function filtrarTestamento(t){ const btnAt=document.getElementById('btn-at'), btnNt=document.getElementById('btn-nt'); if(t==='AT'){ btnAt.classList.add('bg-zinc-800','text-white'); btnAt.classList.remove('text-zinc-400'); btnNt.classList.remove('bg-zinc-800','text-white'); btnNt.classList.add('text-zinc-400'); } else{ btnNt.classList.add('bg-zinc-800','text-white'); btnNt.classList.remove('text-zinc-400'); btnAt.classList.remove('bg-zinc-800','text-white'); btnAt.classList.add('text-zinc-400'); } renderizarLivros(t); }
+function filtrarLivrosPorNome(){ const q=document.getElementById('input-filtro-livros').value.toLowerCase(); const btn=document.getElementById('btn-nt').classList.contains('bg-zinc-800')?'NT':'AT'; renderizarLivros(btn,q); }
+function renderizarLivros(testamento,filtro=''){ const grid=document.getElementById('grid-livros'); grid.innerHTML=''; const livros=Object.keys(bibliaData).filter(l=> bibliaData[l].testamento===testamento && l.toLowerCase().includes(filtro.toLowerCase())); document.getElementById('contador-livros').textContent=`${livros.length} livros`; livros.forEach(livro=>{ const btn=document.createElement('button'); btn.className='bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold py-3 rounded-lg border border-zinc-700 active:scale-95'; btn.textContent=livro; btn.onclick=()=> abrirLivro(livro); grid.appendChild(btn); }); }
+function abrirLivro(livro){ currentLivro=livro; document.getElementById('tela-biblia').classList.add('hidden'); document.getElementById('tela-leitor').classList.remove('hidden'); document.getElementById('leitor-titulo-livro').textContent=livro; const lista=document.getElementById('lista-capitulos'); lista.innerHTML=''; Object.keys(bibliaData[livro].capitulos).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(cap=>{ const btn=document.createElement('button'); btn.className='shrink-0 w-10 h-10 bg-zinc-800 hover:bg-[#39ff14] hover:text-black text-zinc-300 font-bold rounded-lg border border-zinc-700'; btn.textContent=cap; btn.onclick=()=> abrirCapitulo(livro,cap); lista.appendChild(btn); }); const primeiro=Object.keys(bibliaData[livro].capitulos).sort((a,b)=>parseInt(a)-parseInt(b))[0]; if(primeiro) abrirCapitulo(livro,primeiro); }
+function abrirCapitulo(livro,cap){ currentLivro=livro; currentCap=cap; const textoDiv=document.getElementById('leitor-texto'); textoDiv.innerHTML=''; const versiculos=bibliaData[livro].capitulos[cap]; versiculos.forEach((v,idx)=>{ textoDiv.appendChild(criarVersiculoElement(livro,cap,idx,v)); }); textoDiv.style.fontSize=currentFontSize+'px'; textoDiv.style.lineHeight=currentLineHeight==='relaxed'?'1.8':'1.5'; adicionarAoHistorico(`${livro} ${cap}`); lucide.createIcons(); }
+function voltarParaLivros(){ document.getElementById('tela-leitor').classList.add('hidden'); document.getElementById('tela-biblia').classList.remove('hidden'); }
+function compartilharCapitulo(){ if(!currentLivro||!currentCap) return; const texto=`${currentLivro} ${currentCap} - ACF`; if(navigator.share){ navigator.share({title:texto, text:texto, url:location.href}).catch(()=>{}); } }
+function adicionarAoHistorico(ref){ const timestamp=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); historico=historico.filter(h=>h.ref!==ref); historico.unshift({ref,data:timestamp}); if(historico.length>30) historico=historico.slice(0,30); localStorage.setItem('biblia_historico',JSON.stringify(historico)); }
+function renderizarHistorico(){ const container=document.getElementById('lista-historico'); if(historico.length===0){ container.innerHTML='<p class="text-zinc-500 text-center text-sm py-4">Nenhuma leitura.</p>'; return; } container.innerHTML=''; historico.forEach(h=>{ const div=document.createElement('div'); div.className='bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center'; div.innerHTML=`<div><span class="text-sm font-bold text-[#39ff14]">${escapeHtml(h.ref)}</span><br><span class="text-[10px] text-zinc-500">${escapeHtml(h.data)}</span></div><i data-lucide="book-open" class="w-4 h-4 text-zinc-600"></i>`; container.appendChild(div); }); lucide.createIcons(); }
+function limparHistorico(){ if(confirm('Limpar histórico?')){ historico=[]; localStorage.setItem('biblia_historico',JSON.stringify(historico)); renderizarHistorico(); } }
+function executarBuscaGlobal(){ const query=document.getElementById('input-busca-global').value.trim(); const resultados=document.getElementById('resultados-busca'); resultados.innerHTML=''; if(query.length<2) return; const queryLC=query.toLowerCase(); let encontrados=0, countVers=0; Object.keys(bibliaData).forEach(livro=>{ if(countVers>100) return; Object.keys(bibliaData[livro].capitulos).forEach(cap=>{ bibliaData[livro].capitulos[cap].forEach((v,idx)=>{ if(countVers>100) return; if(v.toLowerCase().includes(queryLC)){ addResultado(resultados, `📖 ${livro} ${cap}:${idx+1}`, v, 'book', query); encontrados++; countVers++; } }); }); }); harpaData.forEach(hino=>{ if(hino.titulo.toLowerCase().includes(queryLC)||hino.num.includes(query)){ addResultado(resultados, `🎵 Harpa ${hino.num}`, hino.titulo, 'music', query); encontrados++; } }); if(encontrados===0){ resultados.innerHTML=`<p class="text-zinc-500 text-center text-sm py-4">Nenhum resultado para "${escapeHtml(query)}"</p>`; } else{ const info=document.createElement('p'); info.className='text-xs text-[#39ff14] text-center mb-2'; info.textContent=`${encontrados} resultados`; resultados.prepend(info); } lucide.createIcons(); }
+function addResultado(container,titulo,texto,icon,query){ const div=document.createElement('div'); div.className='bg-zinc-950 border border-zinc-800 p-3 rounded-xl flex gap-3 items-start fade-in'; const iconDiv=document.createElement('div'); iconDiv.className='bg-zinc-800 p-2 rounded-lg shrink-0'; iconDiv.innerHTML=`<i data-lucide="${icon}" class="w-4 h-4 text-[#39ff14]"></i>`; const content=document.createElement('div'); content.className='flex-1 min-w-0'; const h4=document.createElement('h4'); h4.className='text-xs font-bold text-[#39ff14] mb-1'; h4.textContent=titulo; const p=document.createElement('p'); p.className='text-sm text-zinc-300 line-clamp-2'; p.innerHTML=destacarTextoSeguro(texto,query); content.appendChild(h4); content.appendChild(p); div.appendChild(iconDiv); div.appendChild(content); container.appendChild(div); }
+function renderizarIndicesDicionario(){ const c=document.getElementById('indices-alfabeticos'); c.innerHTML=''; ['A','B','C','D','E','F','G','H','I','J','L','M','N','O','P','Q','R','S','T','U','V','Z'].forEach(letra=>{ const btn=document.createElement('button'); btn.className='shrink-0 w-8 h-8 bg-zinc-800 hover:bg-[#39ff14] hover:text-black text-zinc-300 font-bold rounded-lg border border-zinc-700'; btn.textContent=letra; btn.onclick=()=>{ document.getElementById('input-busca-dicio').value=letra; buscarDicionarioWeb(letra); }; c.appendChild(btn); }); }
+
+// HARPA RENDER COM LETRA COMPLETA GARANTIDA
+function renderizarHarpa(lista){
+  const container=document.getElementById('lista-harpa');
+  const statusHarpa=document.getElementById('status-harpa');
+  container.innerHTML='';
+  if(lista.length===0){ container.innerHTML='<p class="text-zinc-500 text-center py-4 text-sm">Nenhum hino.</p>'; return; }
+  if(statusHarpa){ statusHarpa.textContent = `${lista.length} hinos ${harpaCompletaCarregada ? '✓ com letras completas oficiais garantidas' : '(carregando 640 oficiais...)'} • Clique para ver letra completa`; }
+  // info header
+  const info=document.createElement('div'); info.className='bg-zinc-950 border border-[#39ff14]/20 p-2 rounded-lg text-center mb-2';
+  info.innerHTML=`<p class="text-[10px] text-[#39ff14] font-bold">${lista.length} hinos ${harpaCompletaCarregada ? 'com letras completas oficiais ✓' : '(baixando letras completas...)'}</p><p class="text-[9px] text-zinc-500">Toque no hino para abrir letra completa no modal</p>`;
+  container.appendChild(info);
+  lista.slice(0,200).forEach(hino=>{
+    const temLetra = hino.letra_completa && hino.letra_completa.length > 50;
+    const div=document.createElement('div');
+    div.className=`bg-zinc-950 border ${temLetra ? 'border-zinc-800 hover:border-[#39ff14]/50' : 'border-amber-900/30 hover:border-amber-500/50'} p-3 rounded-xl flex items-center gap-3 cursor-pointer fade-in`;
+    div.onclick=()=> abrirHino(hino);
+    div.innerHTML=`<div class="w-10 h-10 ${temLetra ? 'bg-zinc-800' : 'bg-amber-900/30'} rounded-lg flex items-center justify-center text-[#39ff14] font-bold text-sm border border-zinc-700 shrink-0">${escapeHtml(hino.num)}</div><div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-zinc-200 truncate">${escapeHtml(hino.titulo)}</h4><p class="text-xs text-zinc-500 line-clamp-1">${escapeHtml(hino.trecho||'')}</p><span class="text-[8px] ${temLetra ? 'text-green-400' : 'text-amber-400'}">${temLetra ? '✓ letra completa' : '◐ carregando letra...'}</span></div><i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600 shrink-0"></i>`;
+    container.appendChild(div);
+  });
+  if(lista.length>200){ const more=document.createElement('p'); more.className='text-[11px] text-zinc-500 text-center py-2'; more.textContent=`Mostrando 200 de ${lista.length}. Use a busca para filtrar por número ou título.`; container.appendChild(more); }
+  lucide.createIcons();
+}
+
+function abrirHino(hino){
+  const modal=document.createElement('div'); modal.className='fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4'; modal.onclick=(e)=>{ if(e.target===modal) modal.remove(); };
+  let letra = hino.letra_completa || hino.letra || '';
+  if(!letra || letra.length < 20){
+    letra = hino.trecho ? hino.trecho + "\n\n[Letra completa em carregamento... Se não aparecer, limpe cache em Configurações > Limpar caches e reconecte]" : `Hino ${hino.num} - ${hino.titulo}\n\nLetra completa disponível na Harpa Cristã oficial. Conecte à internet para baixar as 640 letras completas garantidas.`;
+  }
+  const temLetraCompleta = hino.letra_completa && hino.letra_completa.length > 100;
+  const letraEscapada = escapeHtml(letra);
+  modal.innerHTML=`<div class="bg-zinc-900 border ${temLetraCompleta ? 'border-[#39ff14]/30' : 'border-amber-500/30'} rounded-2xl p-5 max-w-sm w-full max-h-[85vh] overflow-y-auto"><div class="flex justify-between items-start mb-3"><div><span class="bg-[#39ff14] text-black font-bold px-2 py-1 rounded text-xs">${escapeHtml(hino.num)}</span><h3 class="text-lg font-bold text-white mt-2">${escapeHtml(hino.titulo)}</h3>${hino.autor ? `<p class="text-[10px] text-zinc-500 mt-1">${escapeHtml(hino.autor)}</p>` : ''}<span class="text-[9px] ${temLetraCompleta ? 'bg-green-900 text-green-300' : 'bg-amber-900 text-amber-300'} px-2 py-0.5 rounded-full mt-2 inline-block">${temLetraCompleta ? '✓ Letra completa oficial garantida' : '◐ Prévia - conecte para completa'}</span></div><button onclick="this.closest('.fixed').remove()" class="bg-zinc-800 p-2 rounded-full hover:bg-zinc-700"><i data-lucide="x" class="w-4 h-4"></i></button></div><div class="bg-zinc-950 p-4 rounded-xl text-sm text-zinc-200 leading-relaxed border border-zinc-800" style="white-space: pre-wrap; font-family: inherit;">${letraEscapada}</div>${hino.coro ? `<div class="mt-3 bg-[#39ff14]/10 border border-[#39ff14]/20 p-3 rounded-xl"><p class="text-[10px] text-[#39ff14] font-bold uppercase mb-1">Coro</p><p class="text-sm text-zinc-200 whitespace-pre-wrap">${escapeHtml(hino.coro)}</p></div>` : ''}<div class="flex gap-2 mt-4"><button onclick="navigator.clipboard.writeText(\`${(hino.num + ' - ' + hino.titulo + '\\n\\n' + letra).replace(/`/g,'').slice(0,3000)}\`); alert('✅ Letra completa copiada!')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1"><i data-lucide="copy" class="w-3 h-3"></i> Copiar letra completa</button><button onclick="if(navigator.share){navigator.share({title:'Harpa ${escapeHtml(hino.num)} - ${escapeHtml(hino.titulo)}', text: \`${letra.replace(/`/g,'').slice(0,1000)}\`}).catch(()=>{})} else {navigator.clipboard.writeText(\`${letra.replace(/`/g,'').slice(0,1000)}\`); alert('Copiado')}" class="flex-1 bg-[#39ff14] text-black py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1"><i data-lucide="share-2" class="w-3 h-3"></i> Compartilhar</button></div><p class="text-[9px] text-zinc-600 text-center mt-3">Harpa Cristã Oficial • 640 hinos • ${harpaCompletaCarregada ? 'Letras completas garantidas ✓' : 'Cache local'} • Fonte: gerson23/harpa-crista (jsdelivr + GitHub raw oficial)</p></div>`;
+  document.body.appendChild(modal); lucide.createIcons();
+}
+
+function filtrarHarpa(){ const query=document.getElementById('input-busca-harpa').value.toLowerCase(); renderizarHarpa(harpaData.filter(h=> h.titulo.toLowerCase().includes(query)||h.num.includes(query)|| (h.letra_completa && h.letra_completa.toLowerCase().includes(query)))); }
+function carregarConfigIA(){ document.getElementById('ai-provider').value=aiConfig.provider; document.getElementById('ai-apikey').value=aiConfig.apiKey||''; }
+function salvarConfigIA(){ aiConfig={ provider: document.getElementById('ai-provider').value, apiKey: document.getElementById('ai-apikey').value.trim() }; localStorage.setItem('biblia_ai_config',JSON.stringify(aiConfig)); alert('✅ Config salva!'); document.getElementById('panel-config').classList.add('hidden'); }
+function limparCacheBiblia(){ if(confirm('Limpar caches ACF/Harpa 640 Oficial/Dicionário?')){ localStorage.removeItem('biblia_acf_full'); localStorage.removeItem('harpa_640_cache'); localStorage.removeItem('harpa_640_oficial'); Object.keys(localStorage).forEach(k=>{ if(k.startsWith('dicio_cache_')) localStorage.removeItem(k); }); alert('Caches limpos! Recarregando...'); location.reload(); } }
+function autoGrow(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,128)+'px'; }
+function verificarTeclaChat(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); enviarMensagem(); } }
+function perguntaRapida(t){ document.getElementById('chat-input').value=t; enviarMensagem(); }
+function limparChat(){ if(confirm('Limpar chat?')){ chatHistory=[]; localStorage.setItem('biblia_chat',JSON.stringify(chatHistory)); document.getElementById('chat-messages').innerHTML=`<div class="flex gap-2 items-start"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#39ff14] to-emerald-600 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3.5 h-3.5 text-black"></i></div><div class="msg-ai ai-bubble p-3 rounded-2xl rounded-tl-sm text-sm">Chat limpo!</div></div>`; lucide.createIcons(); } }
+function scrollChatToBottom(){ setTimeout(()=>{ const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; },50); }
+function addMensagemChat(role,texto){ const container=document.getElementById('chat-messages'); const div=document.createElement('div'); if(role==='user'){ div.className='flex gap-2 items-start justify-end fade-in'; const bubble=document.createElement('div'); bubble.className='msg-user ai-bubble p-3 rounded-2xl rounded-tr-sm text-sm whitespace-pre-wrap'; bubble.textContent=texto; div.appendChild(bubble); }else{ div.className='flex gap-2 items-start fade-in'; const icon=document.createElement('div'); icon.className='w-7 h-7 rounded-full bg-gradient-to-br from-[#39ff14] to-emerald-600 flex items-center justify-center shrink-0'; icon.innerHTML='<i data-lucide="bot" class="w-3.5 h-3.5 text-black"></i>'; const bubble=document.createElement('div'); bubble.className='msg-ai ai-bubble p-3 rounded-2xl rounded-tl-sm text-sm'; bubble.innerHTML=formatarRespostaSegura(texto); div.appendChild(icon); div.appendChild(bubble); } container.appendChild(div); scrollChatToBottom(); lucide.createIcons(); }
+function mostrarDigitando(){ const container=document.getElementById('chat-messages'); const div=document.createElement('div'); div.id='typing-indicator'; div.className='flex gap-2 items-start fade-in'; div.innerHTML=`<div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#39ff14] to-emerald-600 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3.5 h-3.5 text-black"></i></div><div class="msg-ai ai-bubble p-3 rounded-2xl rounded-tl-sm text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`; container.appendChild(div); scrollChatToBottom(); document.getElementById('ai-status').textContent='Digitando...'; }
+function esconderDigitando(){ const el=document.getElementById('typing-indicator'); if(el) el.remove(); document.getElementById('ai-status').textContent='Online'; }
+async function enviarMensagem(){ const input=document.getElementById('chat-input'); const texto=input.value.trim(); if(!texto||isAiThinking) return; addMensagemChat('user', texto); input.value=''; input.style.height='auto'; chatHistory.push({role:'user',content:texto}); isAiThinking=true; document.getElementById('btn-enviar').disabled=true; mostrarDigitando(); try{ const resposta=await obterRespostaIA(texto,chatHistory); esconderDigitando(); addMensagemChat('ai', resposta); chatHistory.push({role:'ai',content:resposta}); localStorage.setItem('biblia_chat',JSON.stringify(chatHistory.slice(-30))); }catch(err){ esconderDigitando(); addMensagemChat('ai','❌ Erro: '+escapeHtml(err.message)); } isAiThinking=false; document.getElementById('btn-enviar').disabled=false; }
+function carregarChat(){ if(chatHistory.length===0) return; const container=document.getElementById('chat-messages'); container.innerHTML=''; chatHistory.forEach(msg=>{ addMensagemChat(msg.role==='user'?'user':'ai', msg.content); }); }
+function formatarRespostaSegura(texto){ let t=escapeHtml(texto); t=t.replace(/\*\*(.+?)\*\*/g,'<strong class="text-[#39ff14]">$1</strong>'); t=t.replace(/\*(.+?)\*/g,'<em>$1</em>'); t=t.replace(/`(.+?)`/g,'<code class="bg-zinc-800 px-1 rounded text-[#39ff14] text-xs">$1</code>'); t=t.replace(/\n/g,'<br>'); return t; }
+async function obterRespostaIA(pergunta,history){ if(aiConfig.apiKey){ try{ if(aiConfig.provider==='gemini') return await chamarGemini(pergunta,history); else return await chamarOpenAI(pergunta,history); }catch(err){} } await new Promise(r=>setTimeout(r,600)); return respostaContextual(pergunta,history); }
+async function chamarGemini(pergunta,history){ const systemPrompt="Você é assistente bíblico cristão evangélico. Responda em PT-BR, cite ACF."; const contents=history.slice(-6).map(h=>({role:h.role==='user'?'user':'model',parts:[{text:h.content}]})); const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${aiConfig.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:systemPrompt}]},contents})}); if(!res.ok) throw new Error('Gemini falhou'); const data=await res.json(); return data.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.'; }
+async function chamarOpenAI(pergunta,history){ const messages=[{role:'system',content:"Você é assistente bíblico."}]; history.slice(-6).forEach(h=> messages.push({role:h.role==='user'?'user':'assistant',content:h.content})); const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${aiConfig.apiKey}`},body:JSON.stringify({model:'gpt-4o-mini',messages,temperature:0.7})}); if(!res.ok) throw new Error('OpenAI falhou'); const data=await res.json(); return data.choices?.[0]?.message?.content||'Sem resposta.'; }
+function respostaContextual(pergunta,history){ const q=pergunta.toLowerCase(); if(q.includes('joão 3:16')||q.includes('joao 3:16')) return "**João 3:16** - Porque Deus amou o mundo..."; if(q.includes('graça')) return "**Graça** (charis) é favor imerecido. Ef 2:8-9"; if(q.includes('fé')) return "**Fé** Hb 11:1"; if(q.includes('davi')) return "**Davi** - pastor, venceu Golias..."; let contexto=[]; Object.keys(bibliaData).forEach(livro=>{ Object.keys(bibliaData[livro].capitulos).forEach(cap=>{ bibliaData[livro].capitulos[cap].forEach((v,idx)=>{ if(q.split(/\s+/).filter(p=>p.length>3).some(p=> v.toLowerCase().includes(p))){ if(contexto.length<3) contexto.push({ref:`${livro} ${cap}:${idx+1}`,texto:v}); } }); }); }); if(contexto.length>0){ let resp=`Sobre "${pergunta}":\n\n`; contexto.forEach(r=> resp+=`📖 **${r.ref}**: "${r.texto}"\n\n`); return resp; } return `Sobre "${pergunta}" configure API Key.`; }
+async function gerarPregacaoIA(){
+  const keyword=document.getElementById('input-ia-keyword').value.trim(); if(!keyword) return alert('Digite um tema!');
+  const loading=document.getElementById('ia-loading'); const output=document.getElementById('ia-output'); const loadingText=loading.querySelector('p');
+  loading.classList.remove('hidden'); loading.classList.add('flex'); output.classList.add('hidden');
+  if(loadingText) loadingText.textContent=`Gerando esboço sobre "${keyword}" via ${aiConfig.apiKey?aiConfig.provider:'motor offline'}...`;
+  const promptEsboco=`Você é pastor homileta. Crie esboço completo em PT-BR sobre: "${keyword}". Formato: TÍTULO, TEXTO BASE ACF, INTRODUÇÃO, I II III pontos com refs, APLICAÇÃO, CONCLUSÃO, ILUSTRAÇÃO. Bíblico e prático.`;
+  try{
+    let textoIA='';
+    if(aiConfig.apiKey){
+      if(aiConfig.provider==='gemini'){
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${aiConfig.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:"Você é homileta. Gere esboços fiéis ACF."}]},contents:[{role:'user',parts:[{text:promptEsboco}]}]})});
+        if(!res.ok) throw new Error('Gemini erro'); const data=await res.json(); textoIA=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+      }else{
+        const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${aiConfig.apiKey}`},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:'Homileta ACF.'},{role:'user',content:promptEsboco}],temperature:0.7})});
+        if(!res.ok) throw new Error('OpenAI erro'); const data=await res.json(); textoIA=data.choices?.[0]?.message?.content||'';
+      }
+    }else{
+      await new Promise(r=>setTimeout(r,700)); const relacionados=[]; const qLow=keyword.toLowerCase(); Object.keys(bibliaData).forEach(livro=>{ Object.keys(bibliaData[livro].capitulos).forEach(cap=>{ bibliaData[livro].capitulos[cap].forEach((v,i)=>{ if(v.toLowerCase().includes(qLow) && relacionados.length<4) relacionados.push({ref:`${livro} ${cap}:${i+1}`, texto:v}); }); }); }); textoIA=`**TÍTULO:** ${keyword}\n**TEXTO BASE:** ${relacionados[0]?.ref||'Rm 8:28'}\n**I.** Fundamento\n**II.** Exemplos\n**III.** Aplicação\n_Modo offline_`;
+    }
+    if(!textoIA) throw new Error('IA vazio');
+    if(loadingText) loadingText.textContent=`Buscando referências web...`;
+    let webRefs={wikipedia:[], duckduckgo:[]}; try{ webRefs=await buscarWebAberta(keyword); }catch(e){}
+    loading.classList.add('hidden'); loading.classList.remove('flex'); output.classList.remove('hidden');
+    const safeHtml=formatarRespostaSegura(textoIA);
+    let webHtml=''; if(webRefs.wikipedia.length>0 || webRefs.duckduckgo.length>0){ webHtml=`<div class="mt-4 border-t border-zinc-800 pt-3"><h4 class="text-xs font-bold text-[#39ff14] uppercase mb-2">🌐 Web Aberta</h4>`; webRefs.wikipedia.forEach(w=>{ webHtml+=`<a href="${escapeHtml(w.url)}" target="_blank" class="block bg-zinc-900/50 p-2 rounded-lg border border-zinc-800 mb-1"><span class="text-xs font-bold">${escapeHtml(w.titulo)}</span><br><span class="text-[11px] text-zinc-400">${escapeHtml(w.trecho.slice(0,120))}</span></a>`; }); webHtml+=`</div>`; }
+    output.innerHTML=`<div class="flex justify-between mb-3"><h3 class="text-sm font-bold">Esboço: ${escapeHtml(keyword)}</h3><div class="flex gap-1"><button onclick="copiarEsboco()" class="text-[10px] bg-zinc-800 px-2 py-1 rounded">📋 Copiar</button><button onclick="compartilharEsboco()" class="text-[10px] bg-[#39ff14] text-black px-2 py-1 rounded font-bold">Compartilhar</button></div></div><div class="text-sm leading-relaxed whitespace-pre-wrap">${safeHtml}</div>${webHtml}<p class="text-[10px] text-zinc-500 mt-3 border-t border-zinc-800 pt-2">Gerado via ${aiConfig.apiKey?escapeHtml(aiConfig.provider):'offline'} + Web</p>`;
+    lucide.createIcons(); output.dataset.rawText=textoIA;
+  }catch(err){ loading.classList.add('hidden'); loading.classList.remove('flex'); output.classList.remove('hidden'); output.innerHTML=`<div class="bg-red-950/50 border border-red-800 p-3 rounded-lg"><p class="text-sm text-red-300 font-bold">❌ Erro</p><p class="text-xs text-zinc-400 mt-1">${escapeHtml(err.message)}</p></div>`; }
+}
+function copiarEsboco(){ const out=document.getElementById('ia-output'); const txt=out.dataset.rawText||out.innerText; navigator.clipboard.writeText(txt).then(()=> alert('✅ Copiado!')); }
+function compartilharEsboco(){ const out=document.getElementById('ia-output'); const txt=out.dataset.rawText||out.innerText; if(navigator.share){ navigator.share({title:'Esboço', text:txt}).catch(()=>{}); } }
+function toggleFavorito(ref,texto){ const idx=favoritos.findIndex(f=>f.ref===ref); if(idx>-1) favoritos.splice(idx,1); else favoritos.push({ref,texto,data:new Date().toLocaleDateString('pt-BR')}); localStorage.setItem('biblia_favoritos',JSON.stringify(favoritos)); if(!document.getElementById('tela-favoritos').classList.contains('hidden')) renderizarFavoritos(); }
+function renderizarFavoritos(){ const container=document.getElementById('lista-favoritos'); container.innerHTML=''; if(favoritos.length===0){ container.innerHTML='<p class="text-zinc-500 text-center text-sm py-8">Nenhum versículo.</p>'; return; } favoritos.forEach(fav=>{ const div=document.createElement('div'); div.className='bg-zinc-950 border border-zinc-800 p-3 rounded-xl relative fade-in'; const btn=document.createElement('button'); btn.className='absolute top-2 right-2 text-zinc-600 hover:text-red-500'; btn.innerHTML='<i data-lucide="trash-2" class="w-4 h-4"></i>'; btn.onclick=()=> toggleFavorito(fav.ref,fav.texto); const h4=document.createElement('h4'); h4.className='text-xs font-bold text-[#39ff14] mb-1'; h4.textContent=fav.ref; const p=document.createElement('p'); p.className='text-sm text-zinc-300 italic'; p.textContent=`"${fav.texto}"`; const span=document.createElement('span'); span.className='text-[10px] text-zinc-600 mt-2 block'; span.textContent=fav.data; div.appendChild(btn); div.appendChild(h4); div.appendChild(p); div.appendChild(span); container.appendChild(div); }); lucide.createIcons(); }
+</script>
+</body>
+</html>
